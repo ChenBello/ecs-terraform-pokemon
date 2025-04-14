@@ -8,10 +8,10 @@ on:
 env:
   ECR_BACKEND_IMAGE: ${{ vars.ECR_BACKEND_IMAGE }}
   AWS_DEFAULT_REGION: ${{ vars.AWS_DEFAULT_REGION }}
-  # ECS_CLUSTER: ${{ vars.ECS_CLUSTER }}
-  ECS_CLUSTER: "pokemon-ecs-cluster"
-  # ECS_BACKEND_SERVICE: ${{ vars.ECS_BACKEND_SERVICE }}
-  ECS_BACKEND_SERVICE: "pokemon-ecs-service"
+  ECS_CLUSTER: ${{ vars.ECS_CLUSTER }}
+  # ECS_CLUSTER: "pokemon-ecs-cluster"
+  ECS_BACKEND_SERVICE: ${{ vars.ECS_BACKEND_SERVICE }}
+  # ECS_BACKEND_SERVICE: "pokemon-ecs-service"
   AWS_ACCOUNT_ID: ${{ secrets.AWS_ACCOUNT_ID }}
 
 jobs:
@@ -38,11 +38,16 @@ jobs:
           cd application
           docker build -t $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$ECR_BACKEND_IMAGE:latest .
           docker push $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$ECR_BACKEND_IMAGE:latest
+              - name: Print environment variables
+       
 
       - name: Deploy to ECS
-        uses: imehedi/actions-awscli-v2@latest
-        with:
-          args: ecs update-service --cluster $ECS_CLUSTER --service $ECS_BACKEND_SERVICE --force-new-deployment
+        run: |
+          echo "ECS_CLUSTER=$ECS_CLUSTER"
+          echo "ECS_BACKEND_SERVICE=$ECS_BACKEND_SERVICE"
+          echo "AWS_ACCOUNT_ID=$AWS_ACCOUNT_ID"
+
+          aws ecs update-service --cluster $ECS_CLUSTER --service $ECS_BACKEND_SERVICE --force-new-deployment --region $AWS_DEFAULT_REGION
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
