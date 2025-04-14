@@ -53,15 +53,20 @@ jobs:
         if: success()
         run: |
           COMMIT_MESSAGE="${{ github.event.head_commit.message }}"
+          PAYLOAD=$(jq -n \
+            --arg text "✅ *Deployment succeeded!*\n• *Service:* $ECS_BACKEND_SERVICE\n• *Cluster:* $ECS_CLUSTER\n• *User:* ${{ github.actor }}\n• *Commit:* $COMMIT_MESSAGE" \
+            '{text: $text}')
           curl -X POST -H 'Content-type: application/json' \
-          --data "{\"text\":\"✅ *Deployment succeeded!*\n• *Service:* $ECS_BACKEND_SERVICE\n• *Cluster:* $ECS_CLUSTER\n• *User:* ${{ github.actor }}\n• *Commit:* $COMMIT_MESSAGE\"}" \
-          ${{ secrets.SLACK_WEBHOOK_URL }}
+               --data "$PAYLOAD" \
+           ${{ secrets.SLACK_WEBHOOK_URL }}
 
       - name: Notify Slack on Failure
         if: failure()
         run: |
           COMMIT_MESSAGE="${{ github.event.head_commit.message }}"
+          PAYLOAD=$(jq -n \
+            --arg text "❌ *Deployment failed!*\n• *Service:* $ECS_BACKEND_SERVICE\n• *Cluster:* $ECS_CLUSTER\n• *User:* ${{ github.actor }}\n• *Commit:* $COMMIT_MESSAGE" \
+            '{text: $text}')
           curl -X POST -H 'Content-type: application/json' \
-          --data "{\"text\":\"❌ *Deployment failed!*\n• *Service:* $ECS_BACKEND_SERVICE\n• *Cluster:* $ECS_CLUSTER\n• *User:* ${{ github.actor }}\n• *Commit:* $COMMIT_MESSAGE\"}" \
-          ${{ secrets.SLACK_WEBHOOK_URL }}
-  
+               --data "$PAYLOAD" \
+               ${{ secrets.SLACK_WEBHOOK_URL }}
