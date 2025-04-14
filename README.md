@@ -1,133 +1,140 @@
-🐾 ecs-terraform-pokemon
-Random Pokémon Flask App on AWS ECS
-This project showcases a simple yet scalable Flask web app that displays random Pokémon. It's deployed using AWS ECS Fargate, with an Application Load Balancer (ALB) and Auto Scaling for high availability and performance.
 
-🚀 Features
-🎯 Flask-based Python web application
+# ecs-terraform-pokemon
 
-🔁 Displays a random Pokémon each time the page loads
+## Random Pokémon Flask App on AWS ECS
 
-🐳 Dockerized and deployed via Amazon ECS Fargate
+This project demonstrates a scalable Flask web application that displays random Pokémon. The application is deployed using AWS ECS Fargate and integrated with an Application Load Balancer (ALB) and Auto Scaling for high availability and performance.
 
-🌐 Exposed to the internet via ALB
+---
 
-📈 Auto Scaling based on resource usage
+## Features
 
-🔄 Fully automated CI/CD pipeline via GitHub Actions
+- Python Flask web application
+- Displays a random Pokémon on each page load
+- Dockerized and deployed using Amazon ECS Fargate
+- Exposed via an Application Load Balancer (ALB)
+- Auto Scaling based on CPU utilization and ALB request count
+- CI/CD pipeline with GitHub Actions
 
-🧱 Architecture Overview
-Component	Purpose
-Amazon ECS Fargate	Runs the containerized Flask app
-Application Load Balancer (ALB)	Distributes incoming traffic
-Auto Scaling	Automatically scales ECS tasks
-Amazon ECR	Stores Docker images
-GitHub Actions	Automates deployment process
-🛠️ Prerequisites
-AWS account with appropriate IAM permissions
+---
 
-Terraform installed
+## Architecture Overview
 
-Docker installed
+| Component                    | Purpose                               |
+|------------------------------|---------------------------------------|
+| Amazon ECS Fargate           | Hosts the containerized application   |
+| Application Load Balancer    | Routes traffic to the ECS service     |
+| Auto Scaling | Adjusts the number of running tasks based on CPU usage and incoming request count |
+| Amazon ECR                   | Stores Docker images                  |
+| GitHub Actions               | Handles CI/CD automation              |
 
-GitHub account with access to repository secrets and variables
+---
 
-📦 Deployment Instructions
-Clone the Repository:
+## Prerequisites
 
-bash
-Copy
-Edit
+- AWS account with necessary IAM permissions
+- Terraform installed
+- Docker installed
+- GitHub repository with required secrets and variables
+
+---
+
+## Deployment Instructions
+
+### 1. Clone the Repository
+
+```bash
 git clone https://github.com/ChenBello/ecs-terraform-pokemon.git
 cd ecs-terraform-pokemon
-Configure Terraform Variables:
+```
 
-bash
-Copy
-Edit
+### 2. Configure Terraform Variables
+
+```bash
 cp terraform.tfvars.example terraform.tfvars
-Update terraform.tfvars with your AWS account, VPC, and app configuration.
+```
 
-(Optional) Build Docker Image Locally:
+Update `terraform.tfvars` with your AWS, VPC, and application-specific settings.
 
-bash
-Copy
-Edit
+### 3. (Optional) Build Docker Image Locally
+
+```bash
 cd application
 docker build -t pokemon-flask-app .
-Push Image to ECR or Docker Hub: Follow your registry’s instructions for login and image push.
+```
 
-Deploy with Terraform:
+### 4. Push the Image to ECR or Docker Hub
 
-bash
-Copy
-Edit
+Follow your container registry instructions for login and image push.
+
+### 5. Deploy Infrastructure with Terraform
+
+```bash
 cd infrastructure
 terraform init
 terraform apply
-Access Your App: After deployment, the app is accessible via the ALB DNS name output by Terraform.
+```
 
-🔁 CI/CD with GitHub Actions
-This repository includes a GitHub Actions workflow for continuous deployment, located at:
+### 6. Access the Application
 
-bash
-Copy
-Edit
-.github/workflows/DeployApp.yml
-✅ What It Does:
-Builds the Docker image when changes occur in application/
+The application will be accessible via the ALB DNS name output by Terraform. (ECS Auto Scaling adjusts task count based on CPU usage and ALB request count).
 
-Pushes the image to Amazon ECR
+---
 
-Triggers a force-new-deployment on ECS
+## CI/CD with GitHub Actions
 
-Sends a Slack notification on success/failure
+A GitHub Actions workflow is included for continuous deployment.
 
-Supports manual deployments via workflow dispatch
+**Workflow File:** `.github/workflows/DeployApp.yml`
 
-⚙️ Workflow Triggers
-Auto: On push to main affecting application/ directory
+### What It Does
 
-Manual: Trigger from the GitHub Actions UI
+- Detects changes in the `application/` directory on push to `main`
+- Builds and pushes the Docker image to Amazon ECR
+- Triggers a new ECS deployment
+- Sends a Slack notification on success or failure
+- Supports manual deployment via workflow dispatch
 
-🔐 Required GitHub Secrets
-Add these under Settings → Secrets and variables → Actions:
+---
 
-Name	Description
-AWS_ACCESS_KEY_ID	IAM user access key
-AWS_SECRET_ACCESS_KEY	IAM user secret key
-AWS_ACCOUNT_ID	Your AWS account ID
-SLACK_WEBHOOK_URL	Slack incoming webhook URL
-📘 Repository Variables
-Add under Settings → Variables:
+## GitHub Secrets (Settings → Secrets and variables → Actions)
 
-Name	Description
-ECR_BACKEND_IMAGE	ECR repo name (e.g. pokemon-flask-app)
-AWS_DEFAULT_REGION	AWS region (e.g. us-east-1)
-ECS_CLUSTER	ECS cluster name
-ECS_BACKEND_SERVICE	ECS service name
-📤 Deployment Workflow Steps
-Checkout the repository
+| Name                  | Description                     |
+|-----------------------|---------------------------------|
+| AWS_ACCESS_KEY_ID     | IAM access key                  |
+| AWS_SECRET_ACCESS_KEY | IAM secret key                  |
+| AWS_ACCOUNT_ID        | AWS account ID                  |
+| SLACK_WEBHOOK_URL     | Slack incoming webhook URL      |
 
-Authenticate to AWS & ECR
+---
 
-Build the Docker image from application/
+## Repository Variables (Settings → Variables)
 
-Push image to ECR with latest tag
+| Name                  | Description                             |
+|-----------------------|-----------------------------------------|
+| ECR_BACKEND_IMAGE     | Name of the ECR repository              |
+| AWS_DEFAULT_REGION    | AWS region (e.g., us-east-1)            |
+| ECS_CLUSTER           | Name of the ECS cluster                 |
+| ECS_BACKEND_SERVICE   | Name of the ECS service                 |
 
-Update ECS service with a new image
+---
 
-Send a Slack message with deployment status
+## Deployment Process Overview
 
-💬 Slack Notification Examples
-✅ Deployment succeeded!
+1. Checkout repository
+2. Authenticate with AWS and ECR
+3. Build Docker image from `application/`
+4. Push image to ECR with `latest` tag
+5. Update ECS service to trigger new deployment
+6. Send deployment status to Slack
 
-❌ Deployment failed!
+---
 
-Messages include:
+## Example Slack Notifications
 
-GitHub username
+- Deployment succeeded
+- Deployment failed
 
-Commit message
+Messages include deployer info, commit message, ECS service, and cluster.
 
-ECS cluster & service name
-
+---
