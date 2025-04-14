@@ -19,34 +19,37 @@ resource "aws_ecs_task_definition" "task_definition" {
     # container definitions describes the configurations for the task
     container_definitions               = jsonencode(
     [
-    {
-        "name"                          : "${var.app_name}-container",
-        "image"                         : var.container_image # "chenbello3/pokemon-flask-app:latest" / "${aws_ecr_repository.ecr.repository_url}:latest",
-        "entryPoint"                    : [],
-        "essential"                     : true,
-        # "networkMode"                   : "awsvpc",  # maybe should be removed
-        portMappings = [
-          {
-            containerPort = var.container_port,
-            hostPort      = var.container_port
-          }
-        ],
-        healthCheck = {
-          command     = ["CMD-SHELL", "curl -f http://localhost:${var.container_port}/health || exit 1"], # 
-          interval    = 30,
-          timeout     = 5,
-          startPeriod = 60,
-          retries     = 3
-        },
-        logConfiguration = {
-          logDriver = "awslogs",
-          options = {
-            awslogs-group         = "/ecs/${var.app_name}",
-            awslogs-region        =  var.region # "us-east-1"
-            awslogs-stream-prefix = "ecs"
-          }
-        }
+      {
+    name        = "${var.app_name}-container",
+    image       = "${var.container_image}",
+    essential   = true,
+    entryPoint  = [],
+    networkMode = "awsvpc", # maybe should be removed
+
+    portMappings = [
+      {
+        containerPort = var.container_port,
+        hostPort      = var.container_port,
+        protocol      = "tcp"
       }
+    ],
+    # healthCheck = {
+    #   command     = [ "CMD-SHELL", "curl -f http://localhost:5000/ || exit 1" ],
+    #   interval    = 30,
+    #   timeout     = 5,
+    #   startPeriod = 10,
+    #   retries     = 3
+    # },
+    logConfiguration = {
+      logDriver = "awslogs",
+      options = {
+        awslogs-group         = "/ecs/${var.app_name}",
+        awslogs-region        = "${var.region}",
+        awslogs-stream-prefix = "ecs"
+      }
+    }
+  }
+      
     ]
     )
     #Fargate is used as opposed to EC2, so we do not need to manage the EC2 instances. Fargate is serveless
