@@ -32,6 +32,7 @@ Flask app that displays random Pokémon, deployed on AWS ECS with ALB (Applicati
 
 2. Build the Docker image:
     ```bash
+    cd application
     docker build -t pokemon-flask-app .
     ```
 
@@ -41,6 +42,7 @@ Flask app that displays random Pokémon, deployed on AWS ECS with ALB (Applicati
     - Update Terraform variables (e.g., AWS region, VPC settings).
     - Apply the Terraform configuration to provision resources.
     ```bash
+    cd infrastructure
     terraform init
     terraform apply
     ```
