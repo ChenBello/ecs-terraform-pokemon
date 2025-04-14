@@ -4,7 +4,8 @@ on:
       - "*"
     branches:
       - main
-   
+  workflow_dispatch:
+
 env:
   ECR_BACKEND_IMAGE: ${{ vars.ECR_BACKEND_IMAGE }}
   AWS_DEFAULT_REGION: ${{ vars.AWS_DEFAULT_REGION }}
