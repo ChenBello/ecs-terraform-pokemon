@@ -49,6 +49,9 @@ jobs:
           AWS_DEFAULT_REGION: ${{ env.AWS_DEFAULT_REGION }}
 
         
+      - name: Install jq
+        run: sudo apt-get update && sudo apt-get install -y jq
+
       - name: Notify Slack on Success
         if: success()
         run: |
@@ -68,3 +71,4 @@ jobs:
           curl -X POST -H 'Content-type: application/json' \
                --data "$PAYLOAD" \
                ${{ secrets.SLACK_WEBHOOK_URL }}
+
