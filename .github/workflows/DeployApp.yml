@@ -52,21 +52,19 @@ jobs:
       - name: Notify Slack on Success
         if: success()
         run: |
-          COMMIT_MESSAGE="${{ github.event.head_commit.message }}"
-          PAYLOAD=$(jq -n \
-            --arg text "✅ *Deployment succeeded!*\n• *Service:* $ECS_BACKEND_SERVICE\n• *Cluster:* $ECS_CLUSTER\n• *User:* ${{ github.actor }}\n• *Commit:* $COMMIT_MESSAGE" \
-            '{text: $text}')
+          COMMIT_MESSAGE=$(echo "${{ github.event.head_commit.message }}" | jq -Rs .)
+          TEXT="✅ *Deployment succeeded!*\n• *Service:* $ECS_BACKEND_SERVICE\n• *Cluster:* $ECS_CLUSTER\n• *User:* ${{ github.actor }}\n• *Commit:* $(echo $COMMIT_MESSAGE | jq -r .)"
+          PAYLOAD=$(jq -n --arg text "$TEXT" '{text: $text}')
           curl -X POST -H 'Content-type: application/json' \
                --data "$PAYLOAD" \
-           ${{ secrets.SLACK_WEBHOOK_URL }}
+               ${{ secrets.SLACK_WEBHOOK_URL }}
 
       - name: Notify Slack on Failure
         if: failure()
         run: |
-          COMMIT_MESSAGE="${{ github.event.head_commit.message }}"
-          PAYLOAD=$(jq -n \
-            --arg text "❌ *Deployment failed!*\n• *Service:* $ECS_BACKEND_SERVICE\n• *Cluster:* $ECS_CLUSTER\n• *User:* ${{ github.actor }}\n• *Commit:* $COMMIT_MESSAGE" \
-            '{text: $text}')
+          COMMIT_MESSAGE=$(echo "${{ github.event.head_commit.message }}" | jq -Rs .)
+          TEXT="❌ *Deployment failed!*\n• *Service:* $ECS_BACKEND_SERVICE\n• *Cluster:* $ECS_CLUSTER\n• *User:* ${{ github.actor }}\n• *Commit:* $(echo $COMMIT_MESSAGE | jq -r .)"
+          PAYLOAD=$(jq -n --arg text "$TEXT" '{text: $text}')
           curl -X POST -H 'Content-type: application/json' \
                --data "$PAYLOAD" \
                ${{ secrets.SLACK_WEBHOOK_URL }}
