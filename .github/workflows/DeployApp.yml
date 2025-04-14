@@ -11,7 +11,8 @@ env:
   AWS_DEFAULT_REGION: ${{ vars.AWS_DEFAULT_REGION }}
   # ECS_CLUSTER: ${{ vars.ECS_CLUSTER }}
   ECS_CLUSTER: "pokemon-ecs-cluster"
-  ECS_BACKEND_SERVICE: ${{ vars.ECS_BACKEND_SERVICE }}
+  # ECS_BACKEND_SERVICE: ${{ vars.ECS_BACKEND_SERVICE }}
+  ECS_BACKEND_SERVICE: "pokemon-ecs-service"
   AWS_ACCOUNT_ID: ${{ secrets.AWS_ACCOUNT_ID }}
 
 jobs:
