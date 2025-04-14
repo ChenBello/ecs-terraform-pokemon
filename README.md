@@ -26,13 +26,13 @@ Flask app that displays random Pokémon, deployed on AWS ECS with ALB (Applicati
 ### Steps to Deploy
 1. Clone the repository:
     ```bash
-    git clone https://github.com/your-username/random-pokemon-flask-app.git
-    cd random-pokemon-flask-app
+    git clone https://github.com/ChenBello/ecs-terraform-pokemon.git
+    cd ecs-terraform-pokemon
     ```
 
 2. Build the Docker image:
     ```bash
-    docker build -t random-pokemon-flask .
+    docker build -t pokemon-flask-app .
     ```
 
 3. Push the Docker image to your Docker Hub or ECR repository.
