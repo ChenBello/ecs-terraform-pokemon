@@ -7,6 +7,8 @@ module "vpc_module" {
   public_subnets     = ["10.0.101.0/24", "10.0.102.0/24"]
   enable_nat_gateway = true
   enable_vpn_gateway = false
+  enable_dns_support   = true 
+  enable_dns_hostnames = true  
 }
 module "aws-alb-ecs" {
   source = "./modules/aws-alb-ecs"

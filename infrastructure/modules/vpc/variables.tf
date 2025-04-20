@@ -37,3 +37,14 @@ variable "enable_vpn_gateway" {
     default     = false
 }
 
+variable "enable_dns_hostnames" {
+    type        = bool
+    description = "Whether to enable DNS host names."
+    default     = true
+}
+
+variable "enable_dns_support" {
+    type        = bool
+    description = "Whether to enable DNS support."
+    default     = true
+}
